@@ -58,8 +58,11 @@ console.log(porsche.purr());
 // Principle 4
 
 // code example for Explicit Binding
+function Toy(specs){
+    Vehicle.call(this, specs);
+}
 
-const bigWheel = new Vehicle({
+const bigWheel = new Toy({
     make: "Louis Marx & Co.",
     model: "Big Wheel",
     horsepower: '2 legs',
