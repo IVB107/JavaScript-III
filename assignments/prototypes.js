@@ -15,7 +15,6 @@
   * destroy() // prototype method -> returns the string: 'Object was removed from the game.'
 */
 function GameObject(attributes){
-  this.name = attributes.name;
   this.createdAt = attributes.createdAt;
   this.dimensions = attributes.dimensions;
 }
@@ -36,7 +35,6 @@ function CharacterStats(stats){
   this.healthPoints = stats.healthPoints;
   this.name = stats.name;
 }
-
 
 CharacterStats.prototype = Object.create(GameObject.prototype);
 
@@ -144,3 +142,101 @@ Humanoid.prototype.greet = function(){
   // * Create Villain and Hero constructor functions that inherit from the Humanoid constructor function.  
   // * Give the Hero and Villains different methods that could be used to remove health points from objects which could result in destruction if health gets to 0 or drops below 0;
   // * Create two new objects, one a villain and one a hero and fight it out with methods!
+
+  // Hero
+function Hero(props){
+  Humanoid.call(this, props);
+}
+
+Hero.prototype = Object.create(Humanoid.prototype);
+
+const rickSanchezC137 = new Hero({
+  createdAt: new Date(),
+    dimensions: {
+      length: 1,
+      width: 1,
+      height: 3,
+    },
+    healthPoints: 20,
+    name: 'Rick',
+    team: 'Rick',
+    weapons: [
+      'Lazer Gun',
+      'Freeze Ray',
+      'A broken bottle',
+      'Combat Suit'
+    ],
+    combatSuitOn: false,
+    currentWeapon: '',
+    language: 'English',
+});
+
+Hero.prototype.selectWeapon = function(){
+  let rand = Math.floor(Math.random() * this.weapons.length);
+  this.currentWeapon = this.weapons[rand];
+}
+
+Hero.prototype.attack = function(target){
+  this.selectWeapon();
+  if (this.currentWeapon === 'Combat Suit'){
+    this.healthPoints += 10;
+    this.combatSuitOn = true;
+    console.log(`${this.name} boosted up with his ${this.currentWeapon}`);
+    this.weapons.splice(3, 1);
+    this.status(target);
+    // Take another turn
+    this.attack(target);
+  }
+  console.log(`${this.name} attacked ${target.name} with his ${this.currentWeapon}`);
+  if (this.combatSuitOn){
+    target.healthPoints -= 7;
+  } else{
+    target.healthPoints -= 3;
+  }
+  if (this.healthPoints <= 5){
+    this.healthPoints += 5;
+  }
+  this.status(target);
+}
+
+Hero.prototype.revive = function(){
+  this.healthPoints += 5;
+  console.log(`${this.name} chugged a health potion.`);
+  this.status();
+}
+
+Hero.prototype.status = function(target){
+  console.log(`${this.name}'s HP: ${this.healthPoints}, ${target.name}'s HP: ${target.healthPoints}`);
+}
+
+// Villain
+
+function Villain(props){
+  Humanoid.call(this, props);
+}
+
+Villain.prototype = Object.create(Humanoid.prototype);
+
+const evilMorty = new Humanoid({
+  createdAt: new Date(),
+  dimensions: {
+    length: 1,
+    width: 1,
+    height: 2,
+  },
+  healthPoints: 25,
+  name: 'Evil Morty',
+  team: 'None',
+  weapons: [
+    'Pulse Rifle',
+    'Switchblade'
+  ],
+  language: 'English',
+});
+
+// console.log(rickSanchezC137);
+rickSanchezC137.attack(evilMorty);
+rickSanchezC137.attack(evilMorty);
+rickSanchezC137.attack(evilMorty);
+rickSanchezC137.attack(evilMorty);
+rickSanchezC137.attack(evilMorty);
