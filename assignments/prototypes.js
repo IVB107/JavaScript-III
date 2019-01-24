@@ -14,13 +14,15 @@
   * dimensions (These represent the character's size in the video game)
   * destroy() // prototype method -> returns the string: 'Object was removed from the game.'
 */
-function GameObject(attributes){
-  this.createdAt = attributes.createdAt;
-  this.dimensions = attributes.dimensions;
-}
 
-GameObject.prototype.destroy = function(){
-  return `${this.name || "Object"} was removed from the game`;
+class GameObject{
+  constructor(attributes){
+    this.createdAt = attributes.createdAt;
+    this.dimensions = attributes.dimensions;
+  }
+  destroy(){
+    return `${this.name || "Object"} was removed from the game`;
+  }
 }
 
 /*
@@ -30,20 +32,17 @@ GameObject.prototype.destroy = function(){
   * takeDamage() // prototype method -> returns the string '<object name> took damage.'
   * should inherit destroy() from GameObject's prototype
 */
-function CharacterStats(stats){
-  GameObject.call(this, stats);
-  this.healthPoints = stats.healthPoints;
-  this.name = stats.name;
-}
 
-CharacterStats.prototype = Object.create(GameObject.prototype);
-
-CharacterStats.prototype.takeDamage = function(){
+class CharacterStats extends GameObject {
+  constructor(stats){
+    super(stats);
+    this.healthPoints = stats.healthPoints;
+    this.name = stats.name;
+  }
+  takeDamage(){
     return `${this.name} took damage`;
+  }
 }
-
-// console.log(CharacterStats.prototype.destroy());
-// console.log(CharacterStats);
 
 /*
   === Humanoid (Having an appearance or character resembling that of a human.) ===
@@ -55,18 +54,18 @@ CharacterStats.prototype.takeDamage = function(){
   * should inherit takeDamage() from CharacterStats
 */
 
-function Humanoid(props){
-  CharacterStats.call(this, props);
-  this.team = props.team;
-  this.weapons = props.weapons;
-  this.language = props.language;
+class Humanoid extends CharacterStats{
+  constructor(props){
+    super(props);
+    this.team = props.team;
+    this.weapons = props.weapons;
+    this.language = props.language;
+  }
+  greet(){
+    return `${this.name} offers a greeting in ${this.language}`;
+  }
 }
-Humanoid.prototype = Object.create(CharacterStats.prototype);
 
-Humanoid.prototype.greet = function(){
-  return `${this.name} offers a greeting in ${this.language}.`
-}
- 
 /*
   * Inheritance chain: GameObject -> CharacterStats -> Humanoid
   * Instances of Humanoid should have all of the same properties as CharacterStats and GameObject.
